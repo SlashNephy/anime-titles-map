@@ -1,0 +1,41 @@
+name: 'Update'
+
+on:
+  push:
+    branches:
+      - 'master'
+    paths-ignore:
+      - 'dist/**'
+
+  schedule:
+    - cron: '0 * * * *'
+
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          token: '${{ secrets.BOT_GITHUB_TOKEN }}'
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+          cache-dependency-path: 'go.sum'
+
+      - name: Generate
+        run: go run ./
+
+      - name: Pull
+        run: git pull
+
+      - name: Push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: '🔄 Update'
+          commit_author: 'StarryBlueSky-bot <97773209+StarryBlueSky-bot@users.noreply.github.com>'
