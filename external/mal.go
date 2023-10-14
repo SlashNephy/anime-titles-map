@@ -78,7 +78,7 @@ func (c *MALClient) fetchMediaWithPage(ctx context.Context, page int) (*MALMedia
 		return nil, err
 	}
 
-	slog.Info("fetched media", slog.Int("page", page))
+	slog.Info("[MAL] fetched media", slog.Int("page", page))
 	return &result, nil
 }
 
@@ -87,7 +87,7 @@ func (c *MALClient) FetchMediaAll(ctx context.Context) ([]*MALMediaEntry, error)
 	page := 1
 
 	defer func() {
-		slog.Info("last page", slog.Int("page", page))
+		slog.Info("[MAL] last page", slog.Int("page", page))
 	}()
 
 	for {
@@ -132,7 +132,7 @@ func (c *CachingMALClient) FetchMediaAll(ctx context.Context) ([]*MALMediaEntry,
 	page := 1
 
 	defer func() {
-		slog.Info("last page", slog.Int("page", page))
+		slog.Info("[MAL] last page", slog.Int("page", page))
 	}()
 
 	for {
@@ -144,7 +144,7 @@ func (c *CachingMALClient) FetchMediaAll(ctx context.Context) ([]*MALMediaEntry,
 		}
 
 		if found {
-			slog.Debug("use cached response", slog.Int("page", page), slog.String("path", cachePath))
+			slog.Debug("[MAL] use cached response", slog.Int("page", page), slog.String("path", cachePath))
 		} else {
 			r, err := c.fetchMediaWithPage(ctx, page)
 			if err != nil {

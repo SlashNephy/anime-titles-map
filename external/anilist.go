@@ -58,7 +58,7 @@ func (c *AniListClient) fetchMediaWithPage(ctx context.Context, page int) (*AniL
 		return nil, err
 	}
 
-	slog.Info("fetched media", slog.Int("page", page))
+	slog.Info("[AniList] fetched media", slog.Int("page", page))
 	return &query, nil
 }
 
@@ -67,7 +67,7 @@ func (c *AniListClient) FetchMediaAll(ctx context.Context) ([]*AniListMediaQuery
 	page := 1
 
 	defer func() {
-		slog.Info("last page", slog.Int("page", page))
+		slog.Info("[AniList] last page", slog.Int("page", page))
 	}()
 
 	for {
@@ -112,7 +112,7 @@ func (c *CachingAniListClient) FetchMediaAll(ctx context.Context) ([]*AniListMed
 	page := 1
 
 	defer func() {
-		slog.Info("last page", slog.Int("page", page))
+		slog.Info("[AniList] last page", slog.Int("page", page))
 	}()
 
 	for {
@@ -125,7 +125,7 @@ func (c *CachingAniListClient) FetchMediaAll(ctx context.Context) ([]*AniListMed
 		}
 
 		if found {
-			slog.Debug("use cached response", slog.Int("page", page), slog.String("path", cachePath))
+			slog.Debug("[AniList] use cached response", slog.Int("page", page), slog.String("path", cachePath))
 		} else {
 			r, err := c.fetchMediaWithPage(ctx, page)
 			if err != nil {

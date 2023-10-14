@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"sync"
 
 	"github.com/goccy/go-json"
 
@@ -28,17 +29,33 @@ func main() {
 		panic(err)
 	}
 
-	anilistTitles, err := anilist.FetchTitles(ctx)
-	if err != nil {
-		slog.ErrorContext(ctx, "failed to fetch AniList titles", slog.Any("err", err))
-		panic(err)
-	}
+	var (
+		anilistTitles []*processor.MediaTitle
+		malTitles     []*processor.MediaTitle
+		wg            sync.WaitGroup
+	)
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
 
-	malTitles, err := mal.FetchTitles(ctx)
-	if err != nil {
-		slog.ErrorContext(ctx, "failed to fetch MAL titles", slog.Any("err", err))
-		panic(err)
-	}
+		titles, err := anilist.FetchTitles(ctx)
+		if err != nil {
+			slog.ErrorContext(ctx, "failed to fetch AniList titles", slog.Any("err", err))
+			panic(err)
+		}
+		anilistTitles = append(anilistTitles, titles...)
+	}()
+	go func() {
+		defer wg.Done()
+
+		titles, err := mal.FetchTitles(ctx)
+		if err != nil {
+			slog.ErrorContext(ctx, "failed to fetch MAL titles", slog.Any("err", err))
+			panic(err)
+		}
+		malTitles = append(malTitles, titles...)
+	}()
+	wg.Wait()
 
 	titles, err := processor.MergeTitles(append(anilistTitles, malTitles...)...)
 	if err != nil {
