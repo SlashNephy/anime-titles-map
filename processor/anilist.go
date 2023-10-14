@@ -11,10 +11,15 @@ type AniListProcessor struct {
 	client *external.CachingAniListClient
 }
 
-func NewAniListProcessor(httpClient *http.Client, cacheDir string) *AniListProcessor {
-	return &AniListProcessor{
-		client: external.NewCachingAniListClient(external.NewAniListClient(httpClient), cacheDir),
+func NewAniListProcessor(httpClient *http.Client, cacheDir string) (*AniListProcessor, error) {
+	client, err := external.NewCachingAniListClient(external.NewAniListClient(httpClient), cacheDir)
+	if err != nil {
+		return nil, err
 	}
+
+	return &AniListProcessor{
+		client: client,
+	}, nil
 }
 
 func (p *AniListProcessor) FetchTitles(ctx context.Context) ([]*MediaTitle, error) {

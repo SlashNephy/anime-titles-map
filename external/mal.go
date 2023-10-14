@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"time"
 
@@ -115,11 +116,15 @@ type CachingMALClient struct {
 	cacheDir string
 }
 
-func NewCachingMALClient(client *MALClient, cacheDir string) *CachingMALClient {
+func NewCachingMALClient(client *MALClient, cacheDir string) (*CachingMALClient, error) {
+	if err := os.MkdirAll(cacheDir, 0755); err != nil {
+		return nil, err
+	}
+
 	return &CachingMALClient{
 		MALClient: client,
 		cacheDir:  cacheDir,
-	}
+	}, nil
 }
 
 func (c *CachingMALClient) FetchMediaAll(ctx context.Context) ([]*MALMediaEntry, error) {

@@ -16,36 +16,45 @@ func main() {
 	ctx := context.Background()
 	httpClient := &http.Client{}
 
-	anilist := processor.NewAniListProcessor(httpClient, "cache/anilist")
-	mal := processor.NewMALProcessor(httpClient, "cache/mal")
+	anilist, err := processor.NewAniListProcessor(httpClient, "cache/anilist")
+	if err != nil {
+		slog.ErrorContext(ctx, "failed to create AniList processor", slog.Any("err", err))
+		panic(err)
+	}
+
+	mal, err := processor.NewMALProcessor(httpClient, "cache/mal")
+	if err != nil {
+		slog.ErrorContext(ctx, "failed to create MAL processor", slog.Any("err", err))
+		panic(err)
+	}
 
 	anilistTitles, err := anilist.FetchTitles(ctx)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to fetch AniList titles", slog.Any("err", err))
-		return
+		panic(err)
 	}
 
 	malTitles, err := mal.FetchTitles(ctx)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to fetch MAL titles", slog.Any("err", err))
-		return
+		panic(err)
 	}
 
 	titles, err := processor.MergeTitles(append(anilistTitles, malTitles...)...)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to merge titles", slog.Any("err", err))
-		return
+		panic(err)
 	}
 
 	content, err := json.Marshal(titles)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to marshal titles", slog.Any("err", err))
-		return
+		panic(err)
 	}
 
 	outputPath := "dist/japanese.json"
 	if err = os.WriteFile(outputPath, content, 0644); err != nil {
 		slog.ErrorContext(ctx, "failed to write japanese.json", slog.Any("err", err))
-		return
+		panic(err)
 	}
 }

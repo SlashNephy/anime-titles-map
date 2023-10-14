@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -95,11 +96,15 @@ type CachingAniListClient struct {
 	cacheDir string
 }
 
-func NewCachingAniListClient(client *AniListClient, cacheDir string) *CachingAniListClient {
+func NewCachingAniListClient(client *AniListClient, cacheDir string) (*CachingAniListClient, error) {
+	if err := os.MkdirAll(cacheDir, 0755); err != nil {
+		return nil, err
+	}
+
 	return &CachingAniListClient{
 		AniListClient: client,
 		cacheDir:      cacheDir,
-	}
+	}, nil
 }
 
 func (c *CachingAniListClient) FetchMediaAll(ctx context.Context) ([]*AniListMediaQuery, error) {
