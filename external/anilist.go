@@ -49,9 +49,15 @@ func (c *AniListClient) fetchMediaWithPage(ctx context.Context, page int) (*AniL
 	}
 
 	if err := c.graphqlClient.Query(ctx, &query, variables); err != nil {
-		if errs, ok := err.(graphql.Errors); ok {
-			if strings.Contains(errs[0].Message, "429 Too Many Requests") {
-				return nil, ErrRateLimited
+		var errs graphql.Errors
+		if errors.As(err, &errs) && len(errs) > 0 {
+			for _, e := range errs {
+				if strings.Contains(e.Message, "429 Too Many Requests") {
+					return nil, ErrRateLimited
+				}
+				if strings.Contains(e.Message, "500 Internal Server Error") {
+					return nil, ErrServerError
+				}
 			}
 		}
 

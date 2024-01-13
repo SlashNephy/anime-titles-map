@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 	"os"
-	"sync"
 
 	"github.com/goccy/go-json"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/SlashNephy/anime-titles-map/external"
 	_ "github.com/SlashNephy/anime-titles-map/logger"
@@ -33,30 +34,35 @@ func main() {
 	var (
 		anilistTitles []*processor.MediaTitle
 		malTitles     []*processor.MediaTitle
-		wg            sync.WaitGroup
 	)
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-
-		titles, err := anilist.FetchTitles(ctx)
+	eg, egCtx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		titles, err := anilist.FetchTitles(egCtx)
 		if err != nil {
-			slog.ErrorContext(ctx, "failed to fetch AniList titles", slog.Any("err", err))
-			panic(err)
+			return err
 		}
+
 		anilistTitles = append(anilistTitles, titles...)
-	}()
-	go func() {
-		defer wg.Done()
-
-		titles, err := mal.FetchTitles(ctx)
+		return nil
+	})
+	eg.Go(func() error {
+		titles, err := mal.FetchTitles(egCtx)
 		if err != nil {
-			slog.ErrorContext(ctx, "failed to fetch MAL titles", slog.Any("err", err))
-			panic(err)
+			return err
 		}
+
 		malTitles = append(malTitles, titles...)
-	}()
-	wg.Wait()
+		return nil
+	})
+	if err = eg.Wait(); err != nil {
+		if errors.Is(err, external.ErrServerError) {
+			slog.WarnContext(ctx, "failed to fetch due to server error. Exiting...")
+			return
+		}
+
+		slog.ErrorContext(ctx, "failed to fetch titles", slog.Any("err", err))
+		panic(err)
+	}
 
 	titles, err := processor.MergeTitles(append(anilistTitles, malTitles...)...)
 	if err != nil {

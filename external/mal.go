@@ -63,6 +63,9 @@ func (c *MALClient) fetchMediaWithPage(ctx context.Context, page int) (*MALMedia
 	if response.StatusCode == http.StatusTooManyRequests {
 		return nil, ErrRateLimited
 	}
+	if 500 <= response.StatusCode && response.StatusCode < 600 {
+		return nil, ErrServerError
+	}
 
 	defer func(body io.ReadCloser) {
 		_ = body.Close()
@@ -152,6 +155,8 @@ func (c *CachingMALClient) FetchMediaAll(ctx context.Context) ([]*MALMediaEntry,
 					time.Sleep(time.Second)
 					continue
 				}
+
+				return nil, err
 			}
 
 			result = *r
