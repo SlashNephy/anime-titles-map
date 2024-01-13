@@ -1,4 +1,4 @@
-module anime-titles-map
+module github.com/SlashNephy/anime-titles-map
 
 go 1.21
 

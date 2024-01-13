@@ -9,8 +9,9 @@ import (
 
 	"github.com/goccy/go-json"
 
-	_ "anime-titles-map/logger"
-	"anime-titles-map/processor"
+	"github.com/SlashNephy/anime-titles-map/external"
+	_ "github.com/SlashNephy/anime-titles-map/logger"
+	"github.com/SlashNephy/anime-titles-map/processor"
 )
 
 func main() {

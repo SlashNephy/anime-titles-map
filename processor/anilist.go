@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"anime-titles-map/external"
+	"github.com/SlashNephy/anime-titles-map/external"
 )
 
 type AniListProcessor struct {
