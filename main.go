@@ -70,7 +70,7 @@ func main() {
 		panic(err)
 	}
 
-	content, err := json.Marshal(titles)
+	content, err := json.MarshalIndent(titles, "", "  ")
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to marshal titles", slog.Any("err", err))
 		panic(err)
