@@ -8,7 +8,7 @@ require (
 	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/goccy/go-json v0.10.5
 	github.com/hasura/go-graphql-client v0.14.4
-	golang.org/x/sync v0.13.0
+	golang.org/x/sync v0.15.0
 )
 
 require (
