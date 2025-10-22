@@ -35,7 +35,7 @@ jobs:
         run: git pull
 
       - name: Push
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@28e16e81777b558cc906c8750092100bbb34c5e3 # v7.0.0
         with:
           commit_message: '🔄 Update'
           commit_author: 'StarryBlueSky-bot <97773209+StarryBlueSky-bot@users.noreply.github.com>'
