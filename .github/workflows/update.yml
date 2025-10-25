@@ -17,12 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
         with:
           token: '${{ secrets.BOT_GITHUB_TOKEN }}'
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5
         with:
           go-version-file: 'go.mod'
           cache: true
@@ -35,7 +35,7 @@ jobs:
         run: git pull
 
       - name: Push
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5
         with:
           commit_message: '🔄 Update'
           commit_author: 'StarryBlueSky-bot <97773209+StarryBlueSky-bot@users.noreply.github.com>'
