@@ -1,41 +1,38 @@
-name: 'Update'
+name: Update
 
 on:
   push:
     branches:
-      - 'master'
+      - master
     paths-ignore:
-      - 'dist/**'
+      - "dist/**"
 
   schedule:
-    - cron: '0 * * * *'
+    - cron: "0 * * * *"
 
   workflow_dispatch:
+
+permissions: {}
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
-          token: '${{ secrets.BOT_GITHUB_TOKEN }}'
+          token: "${{ secrets.BOT_GITHUB_TOKEN }}"
 
-      - name: Setup Go
-        uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
+      - uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
         with:
-          go-version-file: 'go.mod'
+          go-version-file: go.mod
           cache: true
-          cache-dependency-path: 'go.sum'
+          cache-dependency-path: go.sum
 
-      - name: Generate
-        run: go run ./
+      - run: go run ./
 
-      - name: Pull
-        run: git pull
+      - run: git pull
 
-      - name: Push
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
         with:
-          commit_message: '🔄 Update'
-          commit_author: 'StarryBlueSky-bot <97773209+StarryBlueSky-bot@users.noreply.github.com>'
+          commit_message: 🔄 Update
+          commit_author: StarryBlueSky-bot <97773209+StarryBlueSky-bot@users.noreply.github.com>
