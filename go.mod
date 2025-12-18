@@ -2,7 +2,7 @@ module github.com/SlashNephy/anime-titles-map
 
 go 1.24.0
 
-toolchain go1.24.9
+toolchain go1.24.11
 
 require (
 	github.com/deckarep/golang-set/v2 v2.8.0
