@@ -1,9 +1,9 @@
-name: 'Check'
+name: Check
 
 on:
   push:
     branches:
-      - 'master'
+      - master
 
   pull_request:
     types:
@@ -12,16 +12,21 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
-    uses: SlashNephy/.github/.github/workflows/go-run.yml@master
-    permissions:
-      contents: 'read'
-    with:
-      task: 'build'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          token: "${{ secrets.BOT_GITHUB_TOKEN }}"
 
-  lint:
-    uses: SlashNephy/.github/.github/workflows/go-lint.yml@master
-    permissions:
-      contents: 'read'
-      pull-requests: 'write'
+      - uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: go.sum
+
+      - run: go build
