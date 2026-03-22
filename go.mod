@@ -6,7 +6,7 @@ require (
 	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/goccy/go-json v0.10.6
 	github.com/hasura/go-graphql-client v0.15.1
-	golang.org/x/sync v0.19.0
+	golang.org/x/sync v0.20.0
 )
 
 require (
