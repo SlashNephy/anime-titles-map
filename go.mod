@@ -12,5 +12,5 @@ require (
 require (
 	github.com/coder/websocket v1.8.14 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	go.mongodb.org/mongo-driver v1.17.4 // indirect
+	go.mongodb.org/mongo-driver v1.17.7 // indirect
 )
